@@ -140,3 +140,14 @@ def enable_dojo():
 def disable_dojo():
     os.system("systemctl stop dojo --no-pager")
     os.system("systemctl disable dojo --no-pager")
+
+def is_shocknet_api_enabled():
+    return is_service_enabled("shocknet_api")
+
+def enable_shocknet_api():
+    os.system("systemctl enable shocknet_api --no-pager")
+    os.system("systemctl start shocknet_api --no-pager")
+
+def disable_shocknet_api():
+    os.system("systemctl stop shocknet_api --no-pager")
+    os.system("systemctl disable shocknet_api --no-pager")

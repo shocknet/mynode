@@ -1,0 +1,29 @@
+# shocknet api service
+# /etc/systemd/system/shocknet_api.service
+
+[Unit]
+Description=Shocknet API
+Wants=lnd.service docker_images.service
+After=lnd.service docker_images.service
+
+[Service]
+ExecStartPre=/usr/bin/wait_on_lnd.sh
+
+ExecStartPre=/opt/mynode/shockapi/before_run.sh
+ExecStart=/opt/mynode/shockapi/run.sh
+ExecStop=/usr/bin/docker stop shocknet_api && docker rm shocknet_api
+ExecReload=/usr/bin/docker restart shocknet_api
+
+User=bitcoin
+Group=bitcoin
+Type=simple
+LimitNOFILE=128000
+TimeoutSec=240
+Restart=always
+RestartSec=60
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=shocknet_api
+
+[Install]
+WantedBy=multi-user.target

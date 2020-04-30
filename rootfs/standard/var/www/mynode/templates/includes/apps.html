@@ -127,4 +127,17 @@
             {% endif %}
         </div>
     </div>
+    <div class="app_tile">
+        <div class="app_status_icon {{ shocknet_api_status_color }}"></div>
+        <div class="app_logo"><img class="app_logo_icon" src="{{ url_for('static', filename="images/shockwallet_icon.png")}}"/></div>
+        <div class="app_title">Shocknet API</div>
+        <div class="app_status">{% if not lnd_ready %}Waiting on LND...{% else %}{{ shocknet_api_status }}{% endif %}</div>
+        <div class="app_contents">
+            {% if not is_installing_docker_images %}
+            <a class="ui-button ui-widget ui-corner-all mynode_button" href="/toggle-shocknet-api">
+                {% if shocknet_api_ready %}Disable{% else %}Enable{% endif %}
+            </a>
+            {% endif %}
+        </div>
+    </div>
 </div>

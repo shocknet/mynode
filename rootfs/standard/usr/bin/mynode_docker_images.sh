@@ -108,6 +108,36 @@ while true; do
         echo $DOJO_UPGRADE_URL > $DOJO_UPGRADE_URL_FILE
     fi
 
+
+# Upgrade socknet api
+    echo "Checking for new shocknet api..."
+    SHOCKNET_UPGRADE_URL=https://github.com/shocknet/api/archive/mynodebtc.zip
+    SHOCKNET_UPGRADE_URL_FILE=/mnt/hdd/mynode/settings/socknet_api_url
+    CURRENT=""
+    if [ -f $SHOCKNET_UPGRADE_URL_FILE ]; then
+        CURRENT=$(cat $SHOCKNET_UPGRADE_URL_FILE)
+    fi
+    if [ "$CURRENT" != "$SHOCKNET_UPGRADE_URL" ]; then
+        docker rmi test:1 || true
+
+        cd /opt/mynode
+        rm -rf shockapi
+        wget $SHOCKNET_UPGRADE_URL -O shockapi.zip
+        unzip -o shockapi.zip -d shockapi
+        rm shockapi.zip
+        #mv mempool* mempoolspace
+        cd shockapi
+	cd api-mynodebtc/mynodebtc
+	chmod +x before_run.sh
+	chmod +x run.sh
+	mv before_run.sh ../..
+	mv run.sh ../..
+    docker build -t shocknet_api_img:1 .
+
+    echo $SHOCKNET_UPGRADE_URL > $SHOCKNET_UPGRADE_URL_FILE
+    fi
+
+
     rm -f /tmp/installing_docker_images
 
     # Wait a day

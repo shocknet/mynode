@@ -414,6 +414,23 @@ def index():
         if is_installing_docker_images():
             dojo_status_color = "yellow"
             dojo_status = "Installing..."
+        
+        #Find shocknet_api status
+        shocknet_api_status_color = "gray"
+        shocknet_api_status = "Unknown"
+        shocknet_api_ready = False
+        if is_shocknet_api_enabled():
+            shocknet_api_status_color = get_service_status_color("shocknet_api")
+            shocknet_api_status_code = get_service_status_code("shocknet_api")
+            if shocknet_api_status_code == 0:
+                shocknet_api_status = "Running"
+                shocknet_api_ready = True
+            if shocknet_api_status_code == 3:
+                shocknet_api_status = "Enabled"
+        if is_installing_docker_images():
+            shocknet_api_status_color = "yellow"
+            shocknet_api_status = "Installing..."
+        
 
         # Check for new version of software
         upgrade_available = False
@@ -470,6 +487,9 @@ def index():
             "fsck_error": has_fsck_error(),
             "fsck_results": get_fsck_results(),
             "sd_rw_error": has_sd_rw_error(),
+            "shocknet_api_status_color":shocknet_api_status_color,
+            "shocknet_api_status":shocknet_api_status,
+            "shocknet_api_ready":shocknet_api_ready,
             "drive_usage": get_drive_usage(),
             "cpu_usage": get_cpu_usage(),
             "ram_usage": get_ram_usage(),
@@ -597,6 +617,15 @@ def page_toggle_dojo():
         disable_dojo()
     else:
         enable_dojo()
+    return redirect("/")
+
+@app.route("/toggle-shocknet-api")
+def toggle_shocknet_api():
+    check_logged_in()
+    if is_shocknet_api_enabled():
+        disable_shocknet_api()
+    else:
+        enable_shocknet_api()
     return redirect("/")
 
 @app.route("/login", methods=["GET","POST"])
